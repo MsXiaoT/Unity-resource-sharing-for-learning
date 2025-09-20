@@ -85,6 +85,7 @@ public class EnemyBase : MonoBehaviour
             if (CanAttack)
             {
                 CancelInvoke(nameof(CanAttackEnd));
+                target.position = player.transform.position;
                 GameObject go = Instantiate(EnemyAttackPosition, transform.position, AttackPos.rotation, AttackPos);
                 go.GetComponent<SlimeAttackTrigger>().SetDamage(damage + (int)Random.Range(0, 5),transform);
                 CanAttack = false;
@@ -93,6 +94,7 @@ public class EnemyBase : MonoBehaviour
             if (Vector2.Distance(transform.position, player.transform.position) > 2f)
             {
                 IsRange = false;
+                target = GetTarget();
             }
         }
     }
@@ -110,12 +112,14 @@ public class EnemyBase : MonoBehaviour
     public void Move(){
         if(waitidle){
             animator_enemy.SetBool("Run",false);
+            rb.linearVelocity = Vector2.zero;
             return;
             }
         Vector3 dir = (target.position - transform.position).normalized;
         if(Vector3.Distance(transform.position,target.position)>0.5f){
             rb.linearVelocity = dir * moveSpeed;
             animator_enemy.SetBool("Run",true);
+            GetComponent<SpriteRenderer>().flipX = (rb.linearVelocity.x<0);
         }
         else{
             target = GetTarget();

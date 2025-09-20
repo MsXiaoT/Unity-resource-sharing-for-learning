@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public Transform owner;
     public Slider hpBar;
     public GameObject DeathVFX;
+    public GameObject DeadUI;
     [Header("属性")]
     public float speed = 5f;
     public int AttackDamage = 5;
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     public float mxhp=100;
     public float h, v;
     public bool isDead=false;
+    public AudioSource AttackSound;
     void Start()
     {
         hp =mxhp;
@@ -35,7 +37,8 @@ public class Player : MonoBehaviour
         Attack();
         }
         else{
-        rb.linearVelocity=Vector2.zero;}
+        rb.linearVelocity=Vector2.zero;
+        }
     }
     public void Move()
     {
@@ -70,6 +73,7 @@ public class Player : MonoBehaviour
             animator_sword.SetTrigger("Attack1");
             GameObject go = Instantiate(swordTrigger, swordPos.position, swordPos.rotation, swordPos);
             go.GetComponent<PlayerAttackTrigger>().SetDamage(AttackDamage + (int)Random.Range(0, 5),transform);
+            AttackSound.PlayOneShot(AttackSound.clip);
 
         }
     }
@@ -85,6 +89,7 @@ public class Player : MonoBehaviour
             Instantiate(DeathVFX, transform.position, Quaternion.identity);
             gameObject.SetActive(false);
             isDead = true;
+            DeadUI.SetActive(true);
         }
         Debug.Log($"Player took {damage} damage!");
     }
